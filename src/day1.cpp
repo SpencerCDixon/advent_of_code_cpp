@@ -55,12 +55,27 @@ int part_two(char *buf)
         add_value(line);
     }
 
-    printf("values size: %ld\n", values.size());
-    return 0;
+    int idx { 0 };
+    int num_increased { 0 };
+    while (idx < (values.size() - 3)) {
+        int current[3] = { values[idx], values[idx + 1], values[idx + 2] };
+        int next[3] = { values[idx + 1], values[idx + 2], values[idx + 3] };
+
+        auto sum = [&](const int* vals) -> int {
+            return vals[0] + vals[1] + vals[2];
+        };
+
+        if (sum(next) > sum(current))
+            num_increased++;
+
+        idx++;
+    }
+
+    return num_increased;
 }
 
-// part-one: 1655
-// part-two: XXXX
+// part-one: [1655]
+// part-two: [1683]
 int main(int argc, char *argv[])
 {
     bool should_run_part_two = false;
@@ -91,13 +106,7 @@ int main(int argc, char *argv[])
     rc = fread(buf, 1, st.st_size, fd);
     assert(rc == st.st_size);
 
-    int num_increased { 0 };
-    if (should_run_part_two) {
-        num_increased = part_two(buf);
-    } else {
-        num_increased = part_one(buf);
-    }
-
+    int num_increased = should_run_part_two ? part_two(buf) : part_one(buf);
     printf("%d", num_increased);
     return 0;
 }
