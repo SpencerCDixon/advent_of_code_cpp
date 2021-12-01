@@ -4,6 +4,8 @@
 #include <string.h>
 #include <sys/stat.h> // fstat
 
+#include <sd/Vec.h>
+
 int part_one(char *buf)
 {
     int previous_value { 0 };
@@ -34,7 +36,26 @@ int part_one(char *buf)
 
 int part_two(char *buf)
 {
-    // TODO: create a Vec<int>
+    Vec<int> values;
+
+    auto add_value = [&](char *line) {
+        if (!line)
+            return;
+        int value = atoi(line);
+        if (value > 0) {
+            values.append(value);
+        }
+    };
+
+    char *line = strtok(buf, "\n");
+    add_value(line);
+
+    while (line) {
+        line = strtok(NULL, "\n");
+        add_value(line);
+    }
+
+    printf("values size: %ld\n", values.size());
     return 0;
 }
 
