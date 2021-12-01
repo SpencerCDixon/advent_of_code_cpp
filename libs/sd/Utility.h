@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+
 #define SD_MAKE_NONCOPYABLE(c) \
 private:                       \
     c(const c &) = delete;     \
@@ -17,17 +19,17 @@ private:                       \
 
 namespace SD {
 
+template<typename T>
+inline T &&move(T &arg)
+{
+    return static_cast<T &&>(arg);
+}
+
 auto exchange(auto &a, auto &&b)
 {
     auto tmp = move(a);
     a = move(b);
     return tmp;
-}
-
-template<typename T>
-inline T &&move(T &arg)
-{
-    return static_cast<T &&>(arg);
 }
 
 template<typename T>
@@ -51,6 +53,6 @@ inline constexpr T &&forward(typename RemoveReference<T>::Type &param)
 
 } // namespace SD
 
-using SD::move;
-using SD::forward;
 using SD::exchange;
+using SD::forward;
+using SD::move;
