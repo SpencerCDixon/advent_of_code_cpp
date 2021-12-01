@@ -1,7 +1,7 @@
-#include <assert.h>
-#include <stdio.h> // fopen
-#include <stdlib.h>
-#include <string.h>
+#include <cassert>
+#include <cstdio> // fopen
+#include <cstdlib>
+#include <cstring>
 #include <sys/stat.h> // fstat
 
 #include <sd/Vec.h>
@@ -69,8 +69,8 @@ int part_two(char *buf)
     return num_increased;
 }
 
-// part-one: [1655]
-// part-two: [1683]
+// part-one: 1655
+// part-two: 1683
 int main(int argc, char *argv[])
 {
     bool should_run_part_two = false;
