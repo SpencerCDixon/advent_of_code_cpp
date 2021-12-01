@@ -8,26 +8,21 @@
 
 int part_one(char *buf)
 {
-    int previous_value { 0 };
     int num_increased { 0 };
-    int num_decreased { 0 };
 
     char *line = strtok(buf, "\n");
-    previous_value = atoi(line);
+    int previous_value = atoi(line);
 
     while (line) {
-        line = strtok(NULL, "\n");
-        if (line == NULL) {
+        line = strtok(nullptr, "\n");
+        if (line == nullptr)
             continue;
-        }
 
         int value = atoi(line);
 
-        if (previous_value < value) {
+        if (value > previous_value)
             num_increased++;
-        } else if (previous_value > value) {
-            num_decreased++;
-        }
+
         previous_value = value;
     }
 
@@ -51,11 +46,11 @@ int part_two(char *buf)
     add_value(line);
 
     while (line) {
-        line = strtok(NULL, "\n");
+        line = strtok(nullptr, "\n");
         add_value(line);
     }
 
-    int idx { 0 };
+    size_t idx { 0 };
     int num_increased { 0 };
     while (idx < (values.size() - 3)) {
         int current[3] = { values[idx], values[idx + 1], values[idx + 2] };
@@ -102,9 +97,9 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char buf[st.st_size];
+    char *buf = static_cast<char*>(malloc(st.st_size));
     rc = fread(buf, 1, st.st_size, fd);
-    assert(rc == st.st_size);
+    ASSERT(rc == st.st_size);
 
     int num_increased = should_run_part_two ? part_two(buf) : part_one(buf);
     printf("%d", num_increased);
