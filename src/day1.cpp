@@ -53,14 +53,10 @@ int part_two(char *buf)
     size_t idx { 0 };
     int num_increased { 0 };
     while (idx < (values.size() - 3)) {
-        int current[3] = { values[idx], values[idx + 1], values[idx + 2] };
-        int next[3] = { values[idx + 1], values[idx + 2], values[idx + 3] };
+        int current = values[idx] + values[idx + 1] + values[idx + 2];
+        int next = values[idx + 1] + values[idx + 2] + values[idx + 3];
 
-        auto sum = [&](const int* vals) -> int {
-            return vals[0] + vals[1] + vals[2];
-        };
-
-        if (sum(next) > sum(current))
+        if (next > current)
             num_increased++;
 
         idx++;
@@ -97,7 +93,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    char *buf = static_cast<char*>(malloc(st.st_size));
+    char *buf = static_cast<char *>(malloc(st.st_size));
     rc = fread(buf, 1, st.st_size, fd);
     ASSERT(rc == st.st_size);
 
