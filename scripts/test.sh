@@ -6,14 +6,14 @@
 
 # $1 - (required) message to display
 function fail() {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
+  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] %s\n" "$1"
   echo ''
   exit
 }
 
 # $1 - (required) message to display
 function success() {
-  printf "\r\033[2K  [\033[0;32mSUCCESS\033[0m] $1\n"
+  printf "\r\033[2K  [\033[0;32mSUCCESS\033[0m] %s\n" "$1"
 }
 
 # $1 - (required) expected result of the challenge
@@ -54,7 +54,6 @@ echo "==> Done."
 echo "==> Running tests for the day exercises"
 
 for day in ./src/day*; do
-  echo ""
   echo "Running: ${day}..."
 
   challenge_day=$(basename $day)
@@ -65,4 +64,12 @@ for day in ./src/day*; do
   run_challenge_test "$expected_part_one" "$part_one_result" "part one"
   part_two_result=$($day part-two)
   run_challenge_test "$expected_part_two" "$part_two_result" "part two"
+done
+
+echo ""
+echo "==> Running tests for LibSD"
+for t in ./tests/Test*; do
+  echo ""
+  echo "Running: ${t}"
+  $t
 done

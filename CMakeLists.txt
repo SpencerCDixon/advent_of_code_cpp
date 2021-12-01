@@ -8,4 +8,4 @@ add_compile_options(${COMPILE_OPTS})
 
 add_subdirectory(libs)
 add_subdirectory(src)
-# add_subdirectory(tests)
+add_subdirectory(tests)
