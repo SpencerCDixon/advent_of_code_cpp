@@ -39,6 +39,13 @@ public:
         return *reinterpret_cast<T *>(&m_storage);
     }
 
+    T value_or(T fallback)
+    {
+        if (has_value())
+            return release_value();
+        return fallback;
+    }
+
     const T &value() const&
     {
         ASSERT(!m_none);

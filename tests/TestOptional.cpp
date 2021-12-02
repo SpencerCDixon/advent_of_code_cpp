@@ -59,4 +59,17 @@ int main(int, char **)
         EXPECT(opt.is_none(), "moved optional to a new location");
         REQUIRE(second.value() == 42);
     }
+
+    // Can provide fallbacks
+    {
+        Optional<int> empty;
+        int value = 10;
+        value += empty.value_or(20);
+        EXPECT(value == 30, "can provide fallbacks when unwrapping the value");
+
+        Optional<int> non_empty { 10 };
+        value = 10;
+        value += empty.value_or(100);
+        EXPECT(value == 20, "won't use the fallback if tracking a value");
+    }
 }
