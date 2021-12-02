@@ -4,3 +4,5 @@ function(create_test name)
 endfunction()
 
 create_test(TestVec)
+create_test(TestRef)
+create_test(TestOptional)

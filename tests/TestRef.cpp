@@ -8,7 +8,7 @@ public:
     ~MemTracker() { g_global_count -= 1; }
 };
 
-int main(int, char *[])
+int main(int, char **)
 {
     // Objects get created when making a ref
     {
