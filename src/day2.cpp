@@ -9,6 +9,9 @@
 
 class Submarine {
 public:
+    Submarine() = default;
+    ~Submarine() = default;
+
     virtual void forward(int amount) = 0;
     virtual void up(int amount) = 0;
     virtual void down(int amount) = 0;
@@ -34,9 +37,6 @@ public:
 
 class BrokenElvishSubmarine : public Submarine {
 public:
-    BrokenElvishSubmarine() = default;
-    ~BrokenElvishSubmarine() = default;
-
     void forward(int amount) override { m_horizontal += amount; }
     void up(int amount) override { m_depth -= amount; }
     void down(int amount) override { m_depth += amount; }
@@ -47,22 +47,23 @@ private:
     int m_depth { 0 };
 };
 
-//class ElvishSubmarine {
-//public:
-//    ElvishSubmarine() = default;
-//    ~ElvishSubmarine() = default;
-//
-//    void forward(int amount) { m_horizontal += amount; }
-//    void up(int amount) { m_depth -= amount; }
-//    void down(int amount) { m_depth += amount; }
-//
-//    [[nodiscard]] int total() const { return m_horizontal * m_depth; }
-//
-//private:
-//    int m_aim { 0 };
-//    int m_horizontal { 0 };
-//    int m_depth { 0 };
-//};
+class ElvishSubmarine : public Submarine {
+public:
+    void forward(int amount) override
+    {
+        m_horizontal += amount;
+        m_depth += m_aim * amount;
+    }
+    void up(int amount) override { m_aim -= amount; }
+    void down(int amount) override { m_aim += amount; }
+
+    [[nodiscard]] int calculate_position() const override { return m_horizontal * m_depth; }
+
+private:
+    int m_aim { 0 };
+    int m_horizontal { 0 };
+    int m_depth { 0 };
+};
 
 int part_one(char *buf)
 {
@@ -74,14 +75,14 @@ int part_one(char *buf)
 
 int part_two(char *buf)
 {
-    //    ElvishSubmarine sub;
-    //    Vec<String> lines = String(buf).split('\n');
-    //    return sub.calculate_position();
-    return 0;
+    ElvishSubmarine sub;
+    Vec<String> commands = String(buf).split('\n');
+    sub.execute_commands(commands);
+    return sub.calculate_position();
 }
 
 // part-one: 2091984
-// part-two: 0
+// part-two: 2086261056
 int main(int argc, char *argv[])
 {
     bool should_run_part_two = false;
