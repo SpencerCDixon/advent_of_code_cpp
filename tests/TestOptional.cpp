@@ -69,7 +69,7 @@ int main(int, char **)
 
         Optional<int> non_empty { 10 };
         value = 10;
-        value += empty.value_or(100);
+        value += non_empty.value_or(100);
         EXPECT(value == 20, "won't use the fallback if tracking a value");
     }
 }
