@@ -4,50 +4,79 @@
 #include <cstring>
 #include <sys/stat.h> // fstat
 
-#include <sd/Vec.h>
 #include <sd/String.h>
+#include <sd/Vec.h>
 
-class ElvishSubmarine {
+class Submarine {
 public:
-    ElvishSubmarine() = default;
-    ~ElvishSubmarine() = default;
+    virtual void forward(int amount) = 0;
+    virtual void up(int amount) = 0;
+    virtual void down(int amount) = 0;
+    [[nodiscard]] virtual int calculate_position() const = 0;
 
-    void forward(int amount) { m_horizontal += amount; }
-    void up(int amount) { m_depth -= amount; }
-    void down(int amount) { m_depth += amount; }
+    void execute_commands(Vec<String> &commands)
+    {
+        for (auto &command : commands) {
+            auto split = command.split(' ');
+            if (split.size() != 2)
+                continue;
 
-    [[nodiscard]] int total() const { return m_horizontal * m_depth; }
+            if (split[0] == String("forward")) {
+                forward(split[1].to_int().value_or(0));
+            } else if (split[0] == String("down")) {
+                down(split[1].to_int().value_or(0));
+            } else if (split[0] == String("up")) {
+                up(split[1].to_int().value_or(0));
+            }
+        }
+    }
+};
+
+class BrokenElvishSubmarine : public Submarine {
+public:
+    BrokenElvishSubmarine() = default;
+    ~BrokenElvishSubmarine() = default;
+
+    void forward(int amount) override { m_horizontal += amount; }
+    void up(int amount) override { m_depth -= amount; }
+    void down(int amount) override { m_depth += amount; }
+    [[nodiscard]] int calculate_position() const override { return m_horizontal * m_depth; }
+
 private:
     int m_horizontal { 0 };
     int m_depth { 0 };
 };
 
+//class ElvishSubmarine {
+//public:
+//    ElvishSubmarine() = default;
+//    ~ElvishSubmarine() = default;
+//
+//    void forward(int amount) { m_horizontal += amount; }
+//    void up(int amount) { m_depth -= amount; }
+//    void down(int amount) { m_depth += amount; }
+//
+//    [[nodiscard]] int total() const { return m_horizontal * m_depth; }
+//
+//private:
+//    int m_aim { 0 };
+//    int m_horizontal { 0 };
+//    int m_depth { 0 };
+//};
+
 int part_one(char *buf)
 {
-    ElvishSubmarine sub;
-    Vec<String> lines = String(buf).split('\n');
-
-    for (auto& line : lines) {
-        auto split = line.split(' ');
-        if (split.size() != 2)
-            continue;
-
-        if (split[0] == String("forward")) {
-            auto value = split[1].to_int();
-            sub.forward(value.value_or(0));
-        } else if (split[0] == String("down")) {
-            auto value = split[1].to_int();
-            sub.down(value.value_or(0));
-        } else if (split[0] == String("up")) {
-            auto value = split[1].to_int();
-            sub.up(value.value_or(0));
-        }
-    }
-    return sub.total();
+    BrokenElvishSubmarine sub;
+    Vec<String> commands = String(buf).split('\n');
+    sub.execute_commands(commands);
+    return sub.calculate_position();
 }
 
 int part_two(char *buf)
 {
+    //    ElvishSubmarine sub;
+    //    Vec<String> lines = String(buf).split('\n');
+    //    return sub.calculate_position();
     return 0;
 }
 
