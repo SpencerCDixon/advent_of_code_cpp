@@ -1,25 +1,50 @@
 #pragma once
 
 #include "Optional.h"
+#include "Ref.h"
+
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
 
 namespace SD {
 
-template<typename Value, typename Error>
+class Error {
+public:
+    static Error from_errno(int code) { return { code }; }
+
+    [[nodiscard]] const char *message() const {
+        static const char* unknown_message = "Unknown error type";
+        if (m_errno_code != 0) {
+            return strerror(m_errno_code);
+        }
+
+        return unknown_message;
+    }
+
+protected:
+    Error(int code) : m_errno_code(code) {}
+
+private:
+    int m_errno_code { 0 };
+};
+
+template<typename ValueType, typename ErrorType>
 class Result {
 public:
-    Result(Value const &v)
+    Result(ValueType const &v)
         : m_value(v)
     {
     }
-    Result(Value &&v)
+    Result(ValueType &&v)
         : m_value(move(v))
     {
     }
-    Result(Error const &e)
+    Result(ErrorType const &e)
         : m_error(e)
     {
     }
-    Result(Error &&e)
+    Result(ErrorType &&e)
         : m_error(move(e))
     {
     }
@@ -27,14 +52,15 @@ public:
     [[nodiscard]] bool is_error() const { return m_error.has_value(); }
     [[nodiscard]] bool is_ok() const { return m_value.has_value(); }
 
-    Value& value() { return m_value.value(); }
-    Error& error() { return m_error.value(); }
+    ValueType &value() { return m_value.value(); }
+    ErrorType &error() { return m_error.value(); }
 
 private:
-    Optional<Value> m_value;
-    Optional<Error> m_error;
+    Optional<ValueType> m_value;
+    Optional<ErrorType> m_error;
 };
 
 } // namespace SD
 
+using SD::Error;
 using SD::Result;

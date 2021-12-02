@@ -12,7 +12,14 @@ int main(int, char **)
 
     // Can create failed result
     {
-        Result<int, char*> result("didn't work :-(");
+        Result<int, char*> result((char*)"didn't work :-(");
         EXPECT(result.is_error(), "can create a failed result");
+    }
+
+    // Can create errors from errno
+    {
+        fopen("blah", "r");
+        auto value = Error::from_errno(errno);
+        EXPECT(strcmp(value.message(), "No such file or directory") == 0, "creates useful error messages");
     }
 }

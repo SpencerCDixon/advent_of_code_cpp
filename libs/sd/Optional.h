@@ -57,6 +57,7 @@ public:
     [[nodiscard]] bool is_none() { return m_none; }
     [[nodiscard]] bool is_none() const { return m_none; }
     [[nodiscard]] bool has_value() { return !m_none; }
+    [[nodiscard]] bool has_value() const { return !m_none; }
 
 private:
     alignas(T) u8 m_storage[sizeof(T)] { 0 };
