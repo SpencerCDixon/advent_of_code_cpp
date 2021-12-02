@@ -33,7 +33,13 @@ public:
         }
     }
 
-    const T &value()
+    T &value() &
+    {
+        ASSERT(!m_none);
+        return *reinterpret_cast<T *>(&m_storage);
+    }
+
+    const T &value() const&
     {
         ASSERT(!m_none);
         return *reinterpret_cast<const T *>(&m_storage);
