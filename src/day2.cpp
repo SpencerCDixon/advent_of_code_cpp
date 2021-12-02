@@ -34,16 +34,13 @@ int part_one(char *buf)
 
         if (split[0] == String("forward")) {
             auto value = split[1].to_int();
-            if (value.has_value())
-                sub.forward(value.value());
+            sub.forward(value.value_or(0));
         } else if (split[0] == String("down")) {
             auto value = split[1].to_int();
-            if (value.has_value())
-                sub.down(value.value());
+            sub.down(value.value_or(0));
         } else if (split[0] == String("up")) {
             auto value = split[1].to_int();
-            if (value.has_value())
-                sub.up(value.value());
+            sub.up(value.value_or(0));
         }
     }
     return sub.total();
@@ -51,10 +48,11 @@ int part_one(char *buf)
 
 int part_two(char *buf)
 {
+    return 0;
 }
 
 // part-one: 2091984
-// part-two: XXX
+// part-two: 0
 int main(int argc, char *argv[])
 {
     bool should_run_part_two = false;
