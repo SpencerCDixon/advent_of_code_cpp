@@ -2,6 +2,7 @@
 
 #include <initializer_list>
 #include <new>
+#include <cstdlib>
 
 #include "Utility.h"
 
