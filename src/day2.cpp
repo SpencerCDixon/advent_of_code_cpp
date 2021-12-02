@@ -20,15 +20,15 @@ public:
     void execute_commands(Vec<String> &commands)
     {
         for (auto &command : commands) {
-            auto split = command.split(' ');
+            auto split = command.trim_whitespace().split(' ');
             if (split.size() != 2)
                 continue;
 
-            if (split[0] == String("forward")) {
+            if (split[0].trim_whitespace() == String("forward")) {
                 forward(split[1].to_int().value_or(0));
-            } else if (split[0] == String("down")) {
+            } else if (split[0].trim_whitespace() == String("down")) {
                 down(split[1].to_int().value_or(0));
-            } else if (split[0] == String("up")) {
+            } else if (split[0].trim_whitespace() == String("up")) {
                 up(split[1].to_int().value_or(0));
             }
         }
