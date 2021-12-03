@@ -1,5 +1,8 @@
-add_executable(day1 day1.cpp)
-add_executable(day2 day2.cpp)
+function(create_day name)
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} PRIVATE sd)
+endfunction()
 
-target_link_libraries(day1 PRIVATE sd)
-target_link_libraries(day2 PRIVATE sd)
+create_day(day1)
+create_day(day2)
+create_day(day3)

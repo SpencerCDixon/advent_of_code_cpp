@@ -68,4 +68,13 @@ int main(int, char **)
 
         EXPECT(sum == 6, "iteration");
     }
+
+    // Pre-determined capacity
+    {
+        Vec<int> my_vec = Vec<int>::with_capacity(20, 0);
+        EXPECT(my_vec.capacity() == 20, "can create vecs with capacity");
+        for (auto& element : my_vec) {
+            REQUIRE(element == 0);
+        }
+    }
 }

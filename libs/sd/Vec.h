@@ -36,8 +36,8 @@ public:
     ElementType& operator*() { return m_vector[m_index]; }
     size_t operator-(const VecIterator& other) { return m_index - other.m_index; }
 
-    bool is_end() const { return m_index == m_vector.size(); }
-    size_t index() const { return m_index; }
+    [[nodiscard]] bool is_end() const { return m_index == m_vector.size(); }
+    [[nodiscard]] size_t index() const { return m_index; }
 
 private:
     friend VecType;
@@ -53,6 +53,16 @@ private:
 template<typename T>
 class Vec {
 public:
+    static Vec with_capacity(size_t size, T default_value)
+    {
+        Vec tmp;
+        tmp.ensure_capacity(size);
+        for(size_t i = 0; i < size; ++i) {
+            tmp.unchecked_append(default_value);
+        }
+        return tmp;
+    }
+
     Vec() = default;
     Vec(std::initializer_list<T> list)
     {
