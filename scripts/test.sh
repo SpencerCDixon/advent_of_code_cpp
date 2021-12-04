@@ -43,6 +43,7 @@ cd "${SCRIPT_PATH}/.."
 
 CHALLENGE_DIR=$(pwd)/src
 
+rm -rf build
 mkdir -p build
 cd build || exit 1
 cmake .. -GNinja >/dev/null

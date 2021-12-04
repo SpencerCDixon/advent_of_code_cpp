@@ -1,6 +1,6 @@
 #include <aoc/Challenge.h>
-#include <sd/Vec.h>
 #include <sd/String.h>
+#include <sd/Vec.h>
 
 class Submarine {
 public:
@@ -60,7 +60,7 @@ private:
     int m_depth { 0 };
 };
 
-int part_one(char *buf)
+int part_one(String &buf)
 {
     BrokenElvishSubmarine sub;
     Vec<String> commands = String(buf).split('\n');
@@ -68,7 +68,7 @@ int part_one(char *buf)
     return sub.calculate_position();
 }
 
-int part_two(char *buf)
+int part_two(String &buf)
 {
     ElvishSubmarine sub;
     Vec<String> commands = String(buf).split('\n');

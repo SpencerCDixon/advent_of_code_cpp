@@ -23,7 +23,7 @@ int Challenge::run(int argc, char **argv)
     if (argc > 1) {
         for (int i = 0; i < argc; ++i) {
             char *arg = argv[i];
-            if (String(arg) == "part-two")) {
+            if (String(arg) == "part-two") {
                 should_run_part_two = true;
                 break;
             }
