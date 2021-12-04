@@ -33,7 +33,7 @@ int part_one(char *buf)
     return gamma * epsilon;
 }
 
-String find_rating(Vec<String> lines, size_t index, bool for_oxygen)
+String find_rating(Vec<String> lines, size_t index, bool use_most_common_bit)
 {
     ASSERT(!lines.is_empty());
     if (lines.size() == 1)
@@ -50,25 +50,18 @@ String find_rating(Vec<String> lines, size_t index, bool for_oxygen)
 
     Vec<String> next;
     bool has_more_ones = counts[index] >= (lines.size() / 2);
-    if (for_oxygen) {
-        for (auto& line : lines) {
-            if (has_more_ones && line.characters()[index] == '1') {
-                next.append(line);
-            } else if (!has_more_ones && line.characters()[index] == '0') {
-                next.append(line);
-            }
-        }
-    } else {
-        for (auto& line : lines) {
-            if (has_more_ones && line.characters()[index] == '0') {
-                next.append(line);
-            } else if (!has_more_ones && line.characters()[index] == '1') {
-                next.append(line);
-            }
+    char common_bit = use_most_common_bit ? '1' : '0';
+    char uncommon_bit = use_most_common_bit ? '0' : '1';
+
+    for (auto &line : lines) {
+        if (has_more_ones && line.characters()[index] == common_bit) {
+            next.append(line);
+        } else if (!has_more_ones && line.characters()[index] == uncommon_bit) {
+            next.append(line);
         }
     }
 
-    return find_rating(next, ++index, for_oxygen);
+    return find_rating(next, ++index, use_most_common_bit);
 }
 
 int part_two(char *buf)
