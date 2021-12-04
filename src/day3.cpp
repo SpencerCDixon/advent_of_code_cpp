@@ -33,16 +33,6 @@ int part_one(char *buf)
     return gamma * epsilon;
 }
 
-u16 to_u16(String const& value)
-{
-    ASSERT(value.length() <= 16);
-    u16 result { 0 };
-    for (size_t i = 0; i < value.length(); ++i) {
-        result |= (value.characters()[i] == '1' ? 1 : 0) << (16 - (16 - value.length()) - i - 1);
-    }
-    return result;
-}
-
 String find_rating(Vec<String> lines, size_t index, bool for_oxygen)
 {
     ASSERT(!lines.is_empty());
@@ -86,7 +76,7 @@ int part_two(char *buf)
     Vec<String> lines = String(buf).split('\n');
     auto oxygen = find_rating(lines, 0, true);
     auto c02_scrubber = find_rating(lines, 0, false);
-    return to_u16(oxygen) * to_u16(c02_scrubber);
+    return oxygen.to_int(2).value() * c02_scrubber.to_int(2).value();
 }
 
 // part-one: 3633500
