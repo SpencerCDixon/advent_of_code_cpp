@@ -17,6 +17,8 @@ private:                       \
 #define YELLOW "\033[33m"
 #define WHITE "\033[97m"
 
+#define BIT(n) (1 << n)
+
 namespace SD {
 
 template<typename T>

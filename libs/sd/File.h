@@ -1,28 +1,27 @@
 #pragma once
 
-#include "String.h"
 #include "Ref.h"
 #include "Result.h"
+#include "String.h"
 
 class File {
-//    SD_MAKE_NONCOPYABLE(File)
 public:
-
     enum OpenOptions {
-        Read = (1 << 0),
-        Write = (1 << 1),
+        Read = BIT(0),
+        Write = BIT(1),
     };
 
-    static Result<Ref<File>, Error> open(String const& path, OpenOptions options = OpenOptions::Read);
+    static Result<Ref<File>, Error> open(String const &path, OpenOptions options = OpenOptions::Read);
     // TODO: create?
 
     File() = default;
-    ~File() {
+    ~File()
+    {
         if (m_handle)
             fclose(m_handle);
     }
 
-    File& operator=(const File& other)
+    File &operator=(const File &other)
     {
         File tmp(other);
         swap_self(tmp);
@@ -35,12 +34,15 @@ public:
     [[nodiscard]] bool empty() const { return size() == 0; }
 
 private:
-    explicit File(String path) : m_path(move(path)) {}
+    explicit File(String path)
+        : m_path(move(path))
+    {
+    }
 
     void swap_self(File &other)
     {
         String path = m_path;
-        FILE* handle = m_handle;
+        FILE *handle = m_handle;
         m_path = other.m_path;
         m_handle = other.m_handle;
         other.m_handle = handle;

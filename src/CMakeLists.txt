@@ -1,6 +1,6 @@
 function(create_day name)
   add_executable(${name} ${name}.cpp)
-  target_link_libraries(${name} PRIVATE sd)
+  target_link_libraries(${name} PRIVATE sd aoc)
 endfunction()
 
 create_day(day1)

@@ -1,9 +1,4 @@
-#include <cassert>
-#include <cstdio> // fopen
-#include <cstdlib>
-#include <cstring>
-#include <sys/stat.h> // fstat
-
+#include <aoc/Challenge.h>
 #include <sd/File.h>
 #include <sd/String.h>
 #include <sd/Vec.h>
@@ -51,13 +46,11 @@ String find_rating(Vec<String> lines, size_t index, bool use_most_common_bit)
 
     Vec<String> next;
     bool has_more_ones = counts[index] >= (lines.size() / 2);
-    char common_bit = use_most_common_bit ? '1' : '0';
-    char uncommon_bit = use_most_common_bit ? '0' : '1';
 
     for (auto &line : lines) {
-        if (has_more_ones && line.characters()[index] == common_bit) {
+        if (has_more_ones && line.characters()[index] == (use_most_common_bit ? '1' : '0')) {
             next.append(line);
-        } else if (!has_more_ones && line.characters()[index] == uncommon_bit) {
+        } else if (!has_more_ones && line.characters()[index] == (use_most_common_bit ? '0' : '1')) {
             next.append(line);
         }
     }
@@ -77,21 +70,8 @@ int part_two(String &buf)
 // part-two: 4550283
 int main(int argc, char *argv[])
 {
-    bool should_run_part_two = false;
-    if (argc > 1) {
-        for (int i = 0; i < argc; ++i) {
-            char *arg = argv[i];
-            if (strcmp(arg, "part-two") == 0) {
-                should_run_part_two = true;
-                break;
-            }
-        }
-    }
-
-    auto file = File::open("/home/spence/code/aoc/data/day3.txt", File::OpenOptions::Read);
-    auto buf = file.value()->read_all();
-
-    int result = should_run_part_two ? part_two(buf) : part_one(buf);
+    Challenge challenge { "/home/spence/code/aoc/data/day3.txt", part_one, part_two };
+    auto result = challenge.run(argc, argv);
     printf("%d", result);
     return 0;
 }
