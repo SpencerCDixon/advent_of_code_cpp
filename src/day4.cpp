@@ -40,6 +40,9 @@ public:
 
     WinResult apply_chosen_number(Index const &index)
     {
+        if (m_has_won)
+            return {};
+
         auto &tile = at(index.x, index.y);
         tile.picked = true;
 
@@ -55,8 +58,10 @@ public:
             if (!has_won_vertical)
                 break;
         }
-        if (has_won_horizontal || has_won_vertical)
+        if (has_won_horizontal || has_won_vertical) {
+            m_has_won = true;
             return { sum_of_unmarked() * tile.value, true };
+        }
 
         return {};
     }
@@ -78,6 +83,7 @@ public:
     }
 
 private:
+    bool m_has_won { false };
     Vec<Tile> m_storage;
 };
 
@@ -144,13 +150,69 @@ int part_one(String &buf)
     return 0;
 }
 
-int part_two(String &)
+int part_two(String &buf)
 {
+    Vec<String> lines = buf.split('\n');
+    if (lines.is_empty())
+        return 0;
+
+    Vec<int> chosen_numbers;
+    parse_line(lines.first(), ',', chosen_numbers);
+
+    Vec<BingoBoard> boards;
+    Vec<int> board_numbers;
+    HashMap<int, Vec<BingoBoard::Index>> indexes;
+
+    for (size_t i = 1; i < lines.size(); ++i) {
+        parse_line(lines[i], ' ', board_numbers);
+
+        if (board_numbers.size() == (BingoBoard::kWidth * BingoBoard::kHeight)) {
+            boards.append({ board_numbers });
+
+            for (size_t num_idx = 0; num_idx < board_numbers.size(); ++num_idx) {
+                int number = board_numbers.at(num_idx);
+
+                int x = num_idx % BingoBoard::kWidth;
+                int y = num_idx / BingoBoard::kHeight;
+                auto index = BingoBoard::Index { boards.size() - 1, x, y };
+
+                auto *board_indexes = indexes.get(number);
+                if (!board_indexes) {
+                    indexes.insert(number, Vec({ index }));
+                } else {
+                    board_indexes->append(index);
+                }
+            }
+
+            board_numbers.clear();
+        }
+    }
+
+//    Vec<bool> winning_boards = Vec<bool>::with_capacity(boards.size(), false);
+
+    size_t total_boards = boards.size();
+    size_t winning_boards { 0 };
+
+    for (auto num : chosen_numbers) {
+        auto boards_with_num = indexes.get(num);
+        if (!boards_with_num)
+            continue;
+
+        for (auto &board_index : *boards_with_num) {
+            auto result = boards[board_index.slot].apply_chosen_number(board_index);
+            if (result.won) {
+                winning_boards++;
+                if (winning_boards == total_boards)
+                    return result.total;
+            }
+        }
+    }
+
     return 0;
 }
 
 // part-one: 11536
-// part-two: 0
+// part-two: 1284
 int main(int argc, char *argv[])
 {
     Challenge challenge { "/home/spence/code/aoc/data/day4.txt", part_one, part_two };
