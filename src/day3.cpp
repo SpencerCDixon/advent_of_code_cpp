@@ -1,5 +1,4 @@
 #include <aoc/Challenge.h>
-#include <sd/File.h>
 #include <sd/String.h>
 #include <sd/Vec.h>
 

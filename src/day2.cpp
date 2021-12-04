@@ -1,11 +1,6 @@
-#include <cassert>
-#include <cstdio> // fopen
-#include <cstdlib>
-#include <cstring>
-#include <sys/stat.h> // fstat
-
-#include <sd/String.h>
+#include <aoc/Challenge.h>
 #include <sd/Vec.h>
+#include <sd/String.h>
 
 class Submarine {
 public:
@@ -85,35 +80,8 @@ int part_two(char *buf)
 // part-two: 2086261056
 int main(int argc, char *argv[])
 {
-    bool should_run_part_two = false;
-    if (argc > 1) {
-        for (int i = 0; i < argc; ++i) {
-            char *arg = argv[i];
-            if (strcmp(arg, "part-two") == 0) {
-                should_run_part_two = true;
-                break;
-            }
-        }
-    }
-
-    FILE *fd = fopen("/home/spence/code/aoc/data/day2.txt", "r");
-    if (!fd) {
-        perror("fopen");
-        return 1;
-    }
-
-    struct stat st;
-    int rc = fstat(fileno(fd), &st);
-    if (rc < 0) {
-        perror("fstat");
-        return 1;
-    }
-
-    char *buf = static_cast<char *>(malloc(st.st_size));
-    rc = fread(buf, 1, st.st_size, fd);
-    ASSERT(rc == st.st_size);
-
-    int result = should_run_part_two ? part_two(buf) : part_one(buf);
+    Challenge challenge { "/home/spence/code/aoc/data/day2.txt", part_one, part_two };
+    auto result = challenge.run(argc, argv);
     printf("%d", result);
     return 0;
 }
