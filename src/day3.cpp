@@ -4,12 +4,13 @@
 #include <cstring>
 #include <sys/stat.h> // fstat
 
+#include <sd/File.h>
 #include <sd/String.h>
 #include <sd/Vec.h>
 
-int part_one(char *buf)
+int part_one(String &buf)
 {
-    Vec<String> lines = String(buf).split('\n');
+    Vec<String> lines = buf.split('\n');
     ASSERT(!lines.is_empty());
 
     size_t column_count = lines.size() / 2;
@@ -64,9 +65,9 @@ String find_rating(Vec<String> lines, size_t index, bool use_most_common_bit)
     return find_rating(next, ++index, use_most_common_bit);
 }
 
-int part_two(char *buf)
+int part_two(String &buf)
 {
-    Vec<String> lines = String(buf).split('\n');
+    Vec<String> lines = buf.split('\n');
     auto oxygen = find_rating(lines, 0, true);
     auto c02_scrubber = find_rating(lines, 0, false);
     return oxygen.to_int(2).value() * c02_scrubber.to_int(2).value();
@@ -87,22 +88,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    FILE *fd = fopen("/home/spence/code/aoc/data/day3.txt", "r");
-    if (!fd) {
-        perror("fopen");
-        return 1;
-    }
-
-    struct stat st;
-    int rc = fstat(fileno(fd), &st);
-    if (rc < 0) {
-        perror("fstat");
-        return 1;
-    }
-
-    char *buf = static_cast<char *>(malloc(st.st_size));
-    rc = fread(buf, 1, st.st_size, fd);
-    ASSERT(rc == st.st_size);
+    auto file = File::open("/home/spence/code/aoc/data/day3.txt", File::OpenOptions::Read);
+    auto buf = file.value()->read_all();
 
     int result = should_run_part_two ? part_two(buf) : part_one(buf);
     printf("%d", result);
