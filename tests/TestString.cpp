@@ -107,11 +107,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char* argv[])
 
     // to_int
     {
+        String empty;
+        EXPECT(empty.to_int().is_none(), "to_int() can't convert an empty string");
         String s1("42");
         EXPECT(s1.to_int().value() == 42, "to_int() with valid number");
         String s2("blah");
         EXPECT(s2.to_int().is_none(), "to_int() with invalid number is none");
         String s3("0");
         EXPECT(s3.to_int().value() == 0, "to_int() 0 works");
+        String base_2("010011010010");
+        EXPECT(base_2.to_int(2).value() == 1234, "to_int() can convert base 2");
     }
 }

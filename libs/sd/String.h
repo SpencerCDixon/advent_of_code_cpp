@@ -83,7 +83,7 @@ public:
     String substring(size_t start, size_t length);
     Vec<String> split(char separator);
 
-    Optional<int> to_int();
+    Optional<int> to_int(int base = 10);
 
 private:
     void set_string(const char* c_string)

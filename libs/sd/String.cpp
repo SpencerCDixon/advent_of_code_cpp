@@ -100,12 +100,15 @@ String String::substring(size_t start, size_t length)
     return { characters() + start, length };
 }
 
-Optional<int> String::to_int()
+Optional<int> String::to_int(int base)
 {
+    if (length() == 0)
+        return {};
+
     if (*this == "0")
         return { 0 };
 
-    int val = atoi(characters());
+    int val = strtol(characters(), NULL, base);
 
     if (!val)
         return {};
