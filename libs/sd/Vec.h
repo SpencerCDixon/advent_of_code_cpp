@@ -110,6 +110,8 @@ public:
 
     const T& first() const { return at(0); }
     T& first() { return at(0); }
+    const T& second() const { return at(1); }
+    T& second() { return at(1); }
 
     const T& last() const { return at(size() - 1); }
     T& last() { return at(size() - 1); }
@@ -152,6 +154,16 @@ public:
     //
     // Storage
     //
+    void clear()
+    {
+        if (m_data) {
+            free(m_data);
+            m_data = nullptr;
+            m_size = 0;
+            m_capacity = 0;
+        }
+    }
+
     void grow_capacity(size_t needed_capacity)
     {
         if (m_capacity >= needed_capacity)
@@ -186,14 +198,6 @@ public:
     Iterator end() { return Iterator(*this, size()); }
 
 private:
-    void clear()
-    {
-        if (m_data) {
-            free(m_data);
-            m_data = nullptr;
-        }
-    }
-
     T* slot(size_t i) { return &data()[i]; }
     const T* slot(size_t i) const { return &data()[i]; }
 

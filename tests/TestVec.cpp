@@ -77,4 +77,17 @@ int main(int, char **)
             REQUIRE(element == 0);
         }
     }
+
+    // Can clear a full vec
+    {
+        Vec<int> my_vec;
+        for (int i = 0; i < 10; ++i)
+            my_vec.append(i);
+
+        REQUIRE(my_vec.size() == 10);
+        my_vec.clear();
+        REQUIRE(my_vec.size() == 0);
+        REQUIRE(my_vec.capacity() == 0);
+        PASS("can clear a full vec");
+    }
 }
