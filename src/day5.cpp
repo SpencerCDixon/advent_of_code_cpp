@@ -79,12 +79,22 @@ public:
     void for_each_point(std::function<void(Point)> fn)
     {
         Point tmp = m_start;
-        Point add_by = is_horizontal() ? Point(m_start.x > m_end.x ? -1 : 1, 0) : Point(0, m_start.y > m_end.y ? -1 : 1);
-        Point finish = m_end + add_by;
+        Point step;
+        if (is_horizontal()) {
+            step = Point(m_start.x > m_end.x ? -1 : 1, 0);
+        } else if (is_vertical()) {
+            step = Point(0, m_start.y > m_end.y ? -1 : 1);
+        } else {
+            int x = (m_end.x - m_start.x) > 0 ? 1 : -1;
+            int y = (m_end.y - m_start.y) > 0 ? 1 : -1;
+            step = Point(x, y);
+        }
+
+        Point finish = m_end + step;
 
         while (tmp != finish) {
             fn(tmp);
-            tmp += add_by;
+            tmp += step;
         }
     }
 
@@ -153,11 +163,34 @@ int part_one(String &buf)
 
 int part_two(String &buf)
 {
-    return 0;
+    Vec<String> lines = buf.split('\n');
+    Vec<Line> valid_line_segments;
+    for (auto &line : lines) {
+        valid_line_segments.append(parse_line(line));
+    }
+
+    std::unordered_map<Point, int> point_counts;
+    for (auto &line_segment : valid_line_segments) {
+        line_segment.for_each_point([&](auto point) {
+            if (!point_counts.contains(point))
+                point_counts[point] = 1;
+            else
+                point_counts[point]++;
+        });
+    }
+
+    int total { 0 };
+    for (auto &el : point_counts)
+    {
+        if (el.second >= 2)
+            total++;
+    }
+
+    return total;
 }
 
 // part-one: 7085
-// part-two: 0
+// part-two: 20271
 int main(int argc, char *argv[])
 {
     Challenge challenge { "/home/spence/code/aoc/data/day5.txt", part_one, part_two };
