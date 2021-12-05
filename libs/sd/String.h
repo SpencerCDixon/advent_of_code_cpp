@@ -11,6 +11,7 @@
 // TODO:
 // * swap
 // * better operator+/-
+// * split on a String and not just a char separator
 
 class String {
 public:

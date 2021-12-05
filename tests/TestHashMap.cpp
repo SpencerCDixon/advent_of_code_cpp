@@ -20,4 +20,20 @@ int main(int, char**)
         REQUIRE(returned_vec->second() == "two");
         PASS("HashMap can insert and retrieve values");
     }
+
+    // Can iterate over values
+    {
+        HashMap<String, int> map;
+        map.insert("k1", 10);
+        map.insert("k2", 10);
+        map.insert("2k", 10);
+        map.insert("1k", 10);
+
+        int total { 0 };
+        map.for_each([&](auto* key, auto* value){
+            total += (*value);
+        });
+
+        EXPECT(total == 40, "hash map can be iterated over");
+    }
 }

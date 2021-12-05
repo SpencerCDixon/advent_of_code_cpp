@@ -1,5 +1,7 @@
 #include "String.h"
 
+#include <functional>
+
 template<typename Key>
 struct HashKeyTrait {
     static size_t hash(const Key &);
@@ -33,6 +35,9 @@ struct HashKeyTrait<String> {
 template<typename Key, typename Value, typename Traits = HashKeyTrait<Key>>
 class HashMap {
 public:
+    using KeyPtr = Key*;
+    using ValuePtr = Value*;
+
     static const size_t kHashTableSize = 256;
     struct Entry {
         Key key;
@@ -65,6 +70,24 @@ public:
                 tmp = iter;
                 iter = iter->next;
                 delete tmp;
+            }
+        }
+    }
+
+    void for_each(std::function<void(KeyPtr, ValuePtr)> fn)
+    {
+        for (size_t i = 0; i < kHashTableSize; ++i) {
+            if (!m_slots[i]) {
+                continue;
+            }
+
+            Entry *iter = m_slots[i];
+            while (iter != nullptr) {
+                Entry *tmp;
+                tmp = iter;
+                iter = iter->next;
+
+                fn(&tmp->key, &tmp->value);
             }
         }
     }
