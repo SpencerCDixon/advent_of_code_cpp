@@ -5,7 +5,7 @@
 
 Result<Ref<File>, Error> File::open(const String &path, File::OpenOptions options)
 {
-    Ref<File> file = Ref<File>::make(File(path));
+    Ref<File> file = Ref<File>::make(path);
     auto error = file->open(options);
     if (error.has_value()) {
         return { error.value() };

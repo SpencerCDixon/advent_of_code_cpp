@@ -3,8 +3,14 @@
 #include "Ref.h"
 #include "Result.h"
 #include "String.h"
+#include "Utility.h"
+
+// TODO:
+// * File::create()
+// * read_into(buf)
 
 class File {
+    SD_MAKE_NONCOPYABLE(File)
 public:
     enum OpenOptions {
         Read = BIT(0),
@@ -12,7 +18,11 @@ public:
     };
 
     static Result<Ref<File>, Error> open(String const &path, OpenOptions options = OpenOptions::Read);
-    // TODO: create?
+
+    explicit File(String path)
+        : m_path(move(path))
+    {
+    }
 
     File() = default;
     ~File()
@@ -21,34 +31,12 @@ public:
             fclose(m_handle);
     }
 
-    File &operator=(const File &other)
-    {
-        File tmp(other);
-        swap_self(tmp);
-        return *this;
-    }
-
     String read_all();
 
     [[nodiscard]] size_t size() const;
     [[nodiscard]] bool empty() const { return size() == 0; }
 
 private:
-    explicit File(String path)
-        : m_path(move(path))
-    {
-    }
-
-    void swap_self(File &other)
-    {
-        String path = m_path;
-        FILE *handle = m_handle;
-        m_path = other.m_path;
-        m_handle = other.m_handle;
-        other.m_handle = handle;
-        other.m_path = path;
-    }
-
     Optional<Error> open(OpenOptions = OpenOptions::Read);
 
 private:
