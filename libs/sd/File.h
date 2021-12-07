@@ -32,6 +32,7 @@ public:
     }
 
     String read_all();
+    Vec<String> read_lines();
 
     [[nodiscard]] size_t size() const;
     [[nodiscard]] bool empty() const { return size() == 0; }

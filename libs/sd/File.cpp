@@ -25,6 +25,11 @@ String File::read_all()
     return result;
 }
 
+Vec<String> File::read_lines()
+{
+    return read_all().split('\n');
+}
+
 size_t File::size() const
 {
     ASSERT(m_handle);
