@@ -1,4 +1,5 @@
 #include <sd/Ref.h>
+#include <sd/String.h>
 #include <sd/Test.h>
 
 static size_t g_global_count = 0;
@@ -13,14 +14,14 @@ int main(int, char **)
     // Objects get created when making a ref
     {
         REQUIRE(g_global_count == 0);
-        Ref<MemTracker> shared = Ref<MemTracker>::make({});
+        Ref<MemTracker> shared = Ref<MemTracker>::make();
         EXPECT(g_global_count == 1, "creating a ref uses memory");
     }
     REQUIRE(g_global_count == 0);
 
     // Duplicating refs doesn't duplicate underlying types
     {
-        Ref<MemTracker> shared = Ref<MemTracker>::make({});
+        Ref<MemTracker> shared = Ref<MemTracker>::make();
         auto second = shared;
         EXPECT(g_global_count == 1, "cloning refs won't allocate more memory");
     }
@@ -28,7 +29,7 @@ int main(int, char **)
 
     // Stay alive until all refs are gone
     {
-        Ref<MemTracker> shared = Ref<MemTracker>::make({});
+        Ref<MemTracker> shared = Ref<MemTracker>::make();
         auto second = shared;
         shared.clear();
         EXPECT(g_global_count == 1, "removing one shared pointer keeps the object alive");
@@ -38,7 +39,7 @@ int main(int, char **)
 
     // Pointers to underlying value are the same
     {
-        Ref<MemTracker> shared = Ref<MemTracker>::make({});
+        Ref<MemTracker> shared = Ref<MemTracker>::make();
         MemTracker *ptr_1 = shared.get();
         auto second = shared;
         MemTracker *ptr_2 = second.get();
@@ -64,6 +65,30 @@ int main(int, char **)
     // Can increment underlying value through ->
     {
         Ref<int> meaning_of_life = Ref<int>::make(42);
+    }
+
+    // Can make a Ref by forwarding arguments (lvalue and rvalue) to underlying type
+    {
+        class NonCopyable {
+            SD_MAKE_NONCOPYABLE(NonCopyable)
+        public:
+            NonCopyable(int rvalue, String &lvalue)
+                : m_rvalue(rvalue)
+                , m_lvalue(lvalue)
+            {
+            }
+
+            [[nodiscard]] int rvalue() const { return m_rvalue; }
+            String& lvalue() { return m_lvalue; }
+        private:
+            int m_rvalue;
+            String& m_lvalue;
+        };
+
+        String my_string { "my string" };
+        auto ref = Ref<NonCopyable>::make(42, my_string);
+        REQUIRE(ref->rvalue() == 42);
+        EXPECT(ref->lvalue() == "my string", "can create references to non-copyable types");
     }
 
     return 0;

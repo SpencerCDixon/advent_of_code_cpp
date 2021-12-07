@@ -11,10 +11,12 @@ template<typename T>
 class Ref {
 public:
     // TODO: Forward args to T
-    static Ref make(T data)
+    template<typename... Args>
+    static Ref make(Args&&... args)
     {
-        auto *control_block = new ControlBlock;
-        control_block->data = data;
+        auto *control_block = new ControlBlock {
+          .data = T(forward<Args>(args)...),
+        };
 
         Ref ref;
         ref.m_control_block = control_block;
