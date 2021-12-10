@@ -12,6 +12,7 @@
 // * swap
 // * better operator+/-
 // * split on a String and not just a char separator
+// * [] or at() subscripting
 
 class String {
 public:

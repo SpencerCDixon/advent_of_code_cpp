@@ -6,6 +6,9 @@
 
 #include "Utility.h"
 
+// TODO:
+// * add a lambda based map
+
 namespace SD {
 
 template<typename VecType, typename ElementType>
