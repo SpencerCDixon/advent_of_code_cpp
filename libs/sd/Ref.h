@@ -10,7 +10,6 @@ namespace SD {
 template<typename T>
 class Ref {
 public:
-    // TODO: Forward args to T
     template<typename... Args>
     static Ref make(Args&&... args)
     {

@@ -80,11 +80,15 @@ int part_one(String &buf)
         }
     }
 
-    printf("%d\n", total);
+//    printf("%d\n", total);
+    printf("0\n");
+
     return 0;
 }
 int part_two(String &buf)
 {
+    printf("0\n");
+
     return 0;
 }
 

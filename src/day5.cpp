@@ -3,8 +3,8 @@
 #include <sd/String.h>
 #include <sd/Vec.h>
 
-#include <unordered_map>
 #include <functional>
+#include <unordered_map>
 
 struct Point {
     int x { 0 };
@@ -46,17 +46,16 @@ struct Point {
 };
 
 namespace std {
-    template <>
-    struct hash<Point>
+template<>
+struct hash<Point> {
+    std::size_t operator()(const Point &k) const
     {
-        std::size_t operator()(const Point& k) const
-        {
-            using std::size_t;
-            using std::hash;
+        using std::hash;
+        using std::size_t;
 
-            return ((hash<int>()(k.x) ^ (hash<int>()(k.y) << 1)) >> 1);
-        }
-    };
+        return ((hash<int>()(k.x) ^ (hash<int>()(k.y) << 1)) >> 1);
+    }
+};
 
 }
 
@@ -141,20 +140,17 @@ int part_one(String &buf)
         }
     }
 
-    std::unordered_map<Point, int> point_counts;
+    int point_counts[1000 * 1000] { 0 };
     for (auto &line_segment : valid_line_segments) {
         line_segment.for_each_point([&](auto point) {
-            if (!point_counts.contains(point))
-                point_counts[point] = 1;
-            else
-                point_counts[point]++;
+            auto idx = point.y * 1000 + point.x;
+            point_counts[idx]++;
         });
     }
 
     int total { 0 };
-    for (auto &el : point_counts)
-    {
-        if (el.second >= 2)
+    for (auto &el : point_counts) {
+        if (el >= 2)
             total++;
     }
 
@@ -169,20 +165,17 @@ int part_two(String &buf)
         valid_line_segments.append(parse_line(line));
     }
 
-    std::unordered_map<Point, int> point_counts;
+    int point_counts[1000 * 1000] { 0 };
     for (auto &line_segment : valid_line_segments) {
         line_segment.for_each_point([&](auto point) {
-            if (!point_counts.contains(point))
-                point_counts[point] = 1;
-            else
-                point_counts[point]++;
+            auto idx = point.y * 1000 + point.x;
+            point_counts[idx]++;
         });
     }
 
     int total { 0 };
-    for (auto &el : point_counts)
-    {
-        if (el.second >= 2)
+    for (auto &el : point_counts) {
+        if (el >= 2)
             total++;
     }
 
