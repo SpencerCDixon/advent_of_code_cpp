@@ -3,10 +3,14 @@
 #include <sd/Utility.h>
 #include <sd/Vec.h>
 
+#include <cstdlib>
+
 class Grid {
 public:
     Grid(Vec<int> storage, int width, int height)
-        : m_storage(move(storage)), m_width(width), m_height(height) {};
+        : m_storage(move(storage))
+        , m_width(width)
+        , m_height(height) {};
     ~Grid() = default;
 
     int at(int x, int y)
@@ -19,70 +23,70 @@ public:
     {
         Vec<int> result;
 
-        if (x % m_width) {
-            result.append(at(x - 1, y));
-        }
-        if (x < (m_width - 1)) {
-            result.append(at(x + 1, y));
-        }
-        if (y % m_height) {
-            result.append(at(x, y - 1));
-        }
-        if (y < (m_height - 1)) {
-            result.append(at(x, y + 1));
-        }
+        if (x % m_width) result.append(at(x - 1, y));
+        if (x < (m_width - 1)) result.append(at(x + 1, y));
+        if (y % m_height) result.append(at(x, y - 1));
+        if (y < (m_height - 1)) result.append(at(x, y + 1));
 
         return result;
     }
 
 private:
-    int m_height;
-    int m_width;
     Vec<int> m_storage;
+    int m_width;
+    int m_height;
 };
 
-Vec<int> parse_line(String &line)
+void parse_line(String &line, Vec<int> &into)
 {
-    Vec<int> result;
     for (size_t i = 0; i < line.length(); ++i) {
-        auto value = line.substring(i, 1).to_int(); // FIXME: Gross, get [] or at() subscripting soon
-        if (value.has_value())
-            result.append(value.value());
-    }
+        if (line.characters()[i] == '\n')
+            continue;
 
-    return result;
+        char tmp[2] = {
+            line.characters()[i],
+            '\0',
+        };
+        int val = strtol(tmp, NULL, 10);
+        ASSERT(val >= 0);
+        into.append(val);
+    }
 }
 
-// 1 - low points are lower in all four quadrants
-// 2 - risk level is the low pointer number + 1
-// 3 - total is the sum of all low points with risk added in
 int part_one(String &buf)
 {
-    auto result = parse_line(buf);
-    Grid grid(result, 100, 100);
+    Vec<String> lines = buf.split('\n');
+
+    int grid_width { 100 };
+    int grid_height { 100 };
+
+    Vec<int> grid_data;
+    grid_data.grow_capacity(grid_width * grid_height);
+
+    for (auto &line : lines) {
+        parse_line(line, grid_data);
+    }
+    ASSERT((int)grid_data.size() == grid_width * grid_height);
+    Grid grid(grid_data, grid_width, grid_height);
 
     int total { 0 };
-    for (int x = 0; x < 10; ++x) {
-        for (int y = 0; y < 5; ++y) {
+    for (int y = 0; y < grid_height; ++y) {
+        for (int x = 0; x < grid_width; ++x ) {
             bool is_lowest { true };
             auto location = grid.at(x, y);
             for (auto nearby : grid.surrounding(x, y)) {
-                if (nearby < location) {
+                if (nearby <= location) {
                     is_lowest = false;
                     break;
                 }
             }
 
-            if (is_lowest) {
+            if (is_lowest)
                 total += (location + 1);
-            }
-
         }
     }
 
-//    printf("%d\n", total);
-    printf("0\n");
-
+    printf("%d\n", total);
     return 0;
 }
 int part_two(String &buf)
@@ -92,7 +96,7 @@ int part_two(String &buf)
     return 0;
 }
 
-// part-one: 0
+// part-one: 425
 // part-two: 0
 int main(int argc, char *argv[])
 {
