@@ -21,7 +21,9 @@ int main(int, char **)
     // Empty
     {
         Vec<bool> v;
-        EXPECT(v.is_empty(), "is empty")
+        REQUIRE(v.is_empty())
+        v.append(true);
+        EXPECT(!v.is_empty(), "is empty")
     }
 
     // First/Last
@@ -73,7 +75,7 @@ int main(int, char **)
     {
         Vec<int> my_vec = Vec<int>::with_capacity(20, 0);
         EXPECT(my_vec.capacity() == 20, "can create vecs with capacity");
-        for (auto& element : my_vec) {
+        for (auto &element : my_vec) {
             REQUIRE(element == 0);
         }
     }
@@ -89,5 +91,30 @@ int main(int, char **)
         REQUIRE(my_vec.size() == 0);
         REQUIRE(my_vec.capacity() == 0);
         PASS("can clear a full vec");
+    }
+
+    // Can remove the last element from a vector
+    {
+        static int times_popped { 0 };
+        struct Poppable {
+            Poppable()
+                : value(0)
+            {
+            }
+            ~Poppable()
+            {
+                times_popped++;
+            }
+            int value;
+        };
+        Vec<Poppable> my_vec;
+        my_vec.append({});
+        my_vec.append({});
+
+        REQUIRE(my_vec.size() == 2);
+        REQUIRE(times_popped == 3);
+        my_vec.pop_last();
+        REQUIRE(my_vec.size() == 1);
+        EXPECT(times_popped == 4, "can remove element from array");
     }
 }
