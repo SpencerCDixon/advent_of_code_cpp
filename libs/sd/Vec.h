@@ -115,6 +115,8 @@ public:
     T& first() { return at(0); }
     const T& second() const { return at(1); }
     T& second() { return at(1); }
+    const T& third() const { return at(2); }
+    T& third() { return at(2); }
 
     const T& last() const { return at(size() - 1); }
     T& last() { return at(size() - 1); }
