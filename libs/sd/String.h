@@ -84,7 +84,6 @@ public:
     String trim_whitespace(TrimLocation location = TrimLocation::Both);
     String substring(size_t start, size_t length);
     Vec<String> split(char separator);
-
     Optional<int> to_int(int base = 10);
 
 private:
